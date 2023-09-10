@@ -4,19 +4,17 @@
 #include <assert.h>
 #include <stdint.h>
 
+#include <string.h>
+
 #include "sort.h"
 #include "strcmp.h"
 
 int main() {
-    // FILE* fileToRead  = fopen("poem", "r");
+    // FILE* fileToRead  = fopen("poem", "r" );
     FILE* fileToRead  = fopen("input", "r");
     assert(fileToRead  != nullptr);
     FILE* fileToWrite = fopen("sorted", "w");
     assert(fileToWrite != nullptr);
-
-    // FILE* fileDebug = fopen("debug", "w");
-    // assert(fileDebug != nullptr);
-    // ^ open all files
 
     //
     fseek(fileToRead, 0, SEEK_END);
@@ -32,15 +30,18 @@ int main() {
     fread(buf, sizeof(char), (size_t)fileSize, fileToRead);
     *(buf + fileSize - 1 - 1) = '\n';
     *(buf + fileSize - 1)     = '\0';
+
     // ^ read file
 
     //
     char* iter = buf;
     size_t lines = 0;
 
-    while (*iter != '\0') {
-        lines += (*iter == '\n');
-    
+    while (iter != buf + fileSize) {
+        if (*iter == '\n') {
+            lines++;
+            *iter = '\0';
+        }
         iter++;
     }
     iter = buf;
@@ -54,13 +55,13 @@ int main() {
     char** fillText = text;
     bool nLinePrev = true;
 
-    while (*iter != '\0') {
+    while (iter != buf + fileSize) {
         if (nLinePrev) {
             *fillText = iter;
             fillText++;
         }
 
-        if (*iter == '\n') {
+        if (*iter == '\0') {
             nLinePrev = true;
         } else {
             nLinePrev = false;
@@ -70,25 +71,10 @@ int main() {
     }
     // ^ fill text arr
 
-    Sort(text, lines + 1, sizeof(char*), &Strcmp);
-    // for (size_t i = 0; i < lines; i++) {
-    //     for(size_t j = 0; *(*(text + i) + j) != '\n'; j++) {
-    //         putchar(*(*(text + i) + j));
-    //     }
-    //     putchar('\n');
-    // }
-
-
-    // fillText = text;
-    // for (size_t i = 0; i < lines + 1; i++) {
-    //     fprintf(fileDebug, "%p\n", *fillText);
-    //     fillText++;
-    // }
-
-    // printf("%lu\n", lines);
-    // fprintf(fileToWrite, "%s", buf);
-
-    // printf("\n\nDROPD\n\n\n");
+    Sort(text, lines , sizeof(char*), &Strcmp);
+    for (size_t i = 0; i < lines; i++) {
+        fprintf(fileToWrite, "%s\n", *(text + i));
+    }
 
     free(buf);
     buf = nullptr;

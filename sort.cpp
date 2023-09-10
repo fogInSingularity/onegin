@@ -7,13 +7,25 @@
 #include "sort.h"
 
 void Sort(void* data, size_t size, size_t elSize, Compare_t* CompareFunc) {
-    for (size_t i = 0; i < size; i++) {
-        for (size_t j = 0; j < i; j++) {
+    // for (size_t i = 0; i < size; i++) {
+    //     for (size_t j = 0; j < i; j++) {
+    //         printf("# i: %lu %p\n", j, *(char**)data + elSize*j);
+    //         printf("# j: %lu %p\n", j + 1, *(char**)data + elSize*(j + 1));
 
-            // норм голову поломал)
-            // char* because we determane data size our self
-            if (CompareFunc(*(char**)data + elSize*i, *(char**)data + elSize*j)) {
-                SwapBytes(*(char**)data + elSize*i, *(char**)data + elSize*j, sizeof(char*));
+    //         // норм голову поломал)
+    //         // char* because we determane data size our self
+    //         if (CompareFunc(*(char**)data + elSize*j, *(char**)data + elSize*(j + 1))) {
+    //             printf("# swap: %s -> %s\n", *(char**)data + elSize*j, *(char**)data + elSize*(j + 1));
+    //             SwapBytes(*(char**)data + elSize*j, *(char**)data + elSize*(j + 1), sizeof(char*));
+    //         }
+    //     }
+    // }
+
+    for (ssize_t sortedEl = (size - 1); sortedEl >= 0; sortedEl--) {
+        for (size_t cur = 0; cur < sortedEl; cur++) {
+            if (CompareFunc(*(void**)((size_t)data + elSize*cur), *(void**)((size_t)data + elSize*(cur + 1))) > 0) {
+                // printf("#%lu %lu swap: %s -> %s\n", sortedEl, cur, *(void**)((size_t)data + elSize*cur), *(void**)((size_t)data + elSize*(cur + 1)));
+                SwapBytes((void*)((size_t)data + elSize*cur), (void*)((size_t)data + elSize*(cur + 1)), elSize); //FIXME - cringe
             }
         }
     }
