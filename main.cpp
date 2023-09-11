@@ -3,12 +3,14 @@
 #include <stddef.h>
 #include <assert.h>
 #include <stdint.h>
-
 #include <string.h>
 
 #include "sort.h"
 #include "strcmp.h"
 #include "utils.h"
+
+// TODO: qsort
+// TODO: docs
 
 int main() {
     FILE* fileToRead  = fopen("poem", "r" );
@@ -24,35 +26,29 @@ int main() {
         return 0;
     }
 
-    // Data data = {
-    //     nullptr,
-    //     nullptr,
-    //     0,
-    //     0,
-    // };
+    Data data = {
+        nullptr,
+        0,
+        nullptr,
+        0,
+    };
 
-    const size_t fileSize = (size_t)FileSize(fileToRead) + 2;
+    GetData(&data, fileToRead);
 
-    char* buf = (char*)calloc(fileSize, sizeof(char)); // hold file chars
+    Sort(data.text, data.nLines , sizeof(char*), &StrCmp);
 
-    FileRead(buf, fileSize, fileToRead);
+    PutData(&data, fileToWrite);
 
-    const size_t lines = CountLines(buf, fileSize);
+    fprintf(fileToWrite, "\n-----------------------------------------------\n\n\n");
 
-    SwapN(buf, fileSize);
+    Sort(data.text, data.nLines , sizeof(char*), &StrCmpRv);
 
-    char** text = (char**)calloc(lines+1, sizeof(char*));
+    PutData(&data, fileToWrite);
 
-    FillText(text, buf, fileSize);
-
-    Sort(text, lines , sizeof(char*), &StrCmpRv);
-
-    PrintText(fileToWrite, lines, text);
-
-    free(buf);
-    buf = nullptr;
-    free(text);
-    text = nullptr;
+    free(data.buf);
+    data.buf = nullptr;
+    free(data.text);
+    data.text = nullptr;
 
     return 0;
 }

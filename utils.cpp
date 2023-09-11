@@ -3,10 +3,76 @@
 #include <stddef.h>
 #include <assert.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "utils.h"
 
-ssize_t FileSize(FILE* file) {
+// ---------------------------------------
+
+static ssize_t FileSize(FILE* file);
+
+static void FileRead(char* buf, size_t fileSize, FILE* fileToRead);
+
+static size_t CountLines(const char* str, const size_t len);
+
+static void SwapN(char* str,const  size_t len);
+
+static void FillText(char** text, char* buf, const size_t fileSize);
+
+// --------------------------------------
+
+void GetData(Data* data, FILE* file) {
+    assert(data != nullptr);
+    assert(file != nullptr);
+
+    data->bufSize = (size_t)FileSize(file) + 2;
+
+    data->buf = (char*)calloc(data->bufSize, sizeof(char));
+
+    FileRead(data->buf, data->bufSize, file);
+
+    data->nLines = CountLines(data->buf, data->bufSize);
+
+    SwapN(data->buf, data->bufSize);
+
+    data->text = (char**)calloc(data->nLines+1, sizeof(char*));
+
+    FillText(data->text, data->buf, data->bufSize);
+}
+
+void PutData(Data* data, FILE* file) {
+    assert(data != nullptr);
+    assert(file != nullptr);
+
+    for (size_t i = 0; i < data->nLines; i++) {
+        fprintf(file, "%s\n", *(data->text + i));
+    }
+}
+
+void PutDataRv(Data* data, FILE* file) {
+    assert(data != nullptr);
+    assert(file != nullptr);
+
+    char* start = nullptr;
+    char* end = nullptr;
+    for (size_t i = 0; i < data->nLines; i++) {
+        start = *(data->text + i);
+        end = start + strlen(start) - 1;
+
+        while (start <= end) {
+            fputc(*end, file);
+            end--;
+        }
+        fputc('\n', file);
+
+        start = nullptr;
+        end = nullptr;
+    }
+}
+
+// -------------------------------------
+
+static ssize_t FileSize(FILE* file) { //
     assert(file != nullptr);
 
     fseek(file, 0, SEEK_END);
@@ -18,7 +84,7 @@ ssize_t FileSize(FILE* file) {
     return size;
 }
 
-void FileRead(char* buf, size_t fileSize, FILE* fileToRead) {
+static void FileRead(char* buf, size_t fileSize, FILE* fileToRead) { //
     assert(buf        != nullptr);
     assert(fileToRead != nullptr);
 
@@ -27,7 +93,7 @@ void FileRead(char* buf, size_t fileSize, FILE* fileToRead) {
     *(buf + fileSize - 1)     = '\0';
 }
 
-size_t CountLines(const char* str, const size_t len) {
+static size_t CountLines(const char* str, const size_t len) { //
     assert(str != nullptr);
 
     const char* iter = str;
@@ -42,7 +108,7 @@ size_t CountLines(const char* str, const size_t len) {
     return lines;
 }
 
-void SwapN(char* str,const size_t len) {
+static void SwapN(char* str,const size_t len) { //
     assert(str != nullptr);
 
     char* iter = str;
@@ -54,7 +120,7 @@ void SwapN(char* str,const size_t len) {
     }
 }
 
-void FillText(char** text, char* buf, const size_t fileSize) {
+static void FillText(char** text, char* buf, const size_t fileSize) { //
     assert(text != nullptr);
     assert(buf  != nullptr);
 
@@ -78,14 +144,3 @@ void FillText(char** text, char* buf, const size_t fileSize) {
         iter++;
     }
 }
-
-void PrintText(FILE* file, const size_t lines, const char* const* text) {
-    assert(file != nullptr);
-    assert(text != nullptr);
-
-    for (size_t i = 0; i < lines; i++) {
-        fprintf(file, "%s\n", *(text + i));
-    }
-}
-
-

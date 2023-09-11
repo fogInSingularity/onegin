@@ -3,23 +3,18 @@
 
 #include <stdio.h>
 
-// struct Data {
-//     char* buf;
-//     char** text;
-//     size_t fileSize;
-//     size_t nLines;
-// };
+struct Data {
+    char* buf;
+    size_t bufSize;
 
-ssize_t FileSize(FILE* file);
+    char** text;
+    size_t nLines;
+};
 
-size_t CountLines(const char* str, const size_t len);
+void GetData(Data* data, FILE* file);
 
-void SwapN(char* str,const  size_t len);
+void PutData(Data* data, FILE* file);
 
-void FillText(char** text, char* buf, const size_t fileSize);
-
-void PrintText(FILE* file, const size_t lines, const char* const* text);
-
-void FileRead(char* buf, size_t fileSize, FILE* fileToRead);
+void PutDataRv(Data* data, FILE* file);
 
 #endif

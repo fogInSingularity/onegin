@@ -47,17 +47,17 @@ int StrCmpRv(void* a, void* b) { //FIXME - написать реверс
     char* endB = strB + strlen(strB) - 1;
 
     while (strA < endA && strB < endB) { //FIXME - not check when str == end
-        while (!IsValid(*strA) && strA < endA) {
+        while (!IsValid(*endA) && strA < endA) { // был валид от strA и из-за этого сорт был карявый
             endA--;
         }
 
-        while (!IsValid(*strB) && strB < endB) {
+        while (!IsValid(*endB) && strB < endB) {
             endB--;
         }
 
         if (*endA != *endB) {
             // printf("# return %d\n", *endA - *endB);
-            // printf("#   %s -> %s\n", strA, strB);
+            // printf("# %c -> %c\n", *strA, *strB);
             return (*endA - *endB > 0) ? 1 : 0;
         }
 
