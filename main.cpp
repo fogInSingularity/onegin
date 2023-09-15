@@ -9,9 +9,6 @@
 #include "strcmp.h"
 #include "utils.h"
 
-// TODO: qsort
-// TODO: docs
-
 int main() {
     FILE* fileToRead  = fopen("poem", "r" );
     // FILE* fileToRead  = fopen("input", "r");
@@ -35,20 +32,23 @@ int main() {
 
     GetData(&data, fileToRead);
 
-    Sort(data.text, data.nLines , sizeof(char*), &StrCmp);
+    Sort(data.text, data.text + data.nLines - 1, sizeof(char*), &StrCmp);
 
     PutData(&data, fileToWrite);
 
     fprintf(fileToWrite, "\n-----------------------------------------------\n\n\n");
 
-    Sort(data.text, data.nLines , sizeof(char*), &StrCmpRv);
+    Sort(data.text, data.text + data.nLines - 1 , sizeof(char*), &StrCmpRv);
 
     PutData(&data, fileToWrite);
 
-    free(data.buf);
-    data.buf = nullptr;
-    free(data.text);
-    data.text = nullptr;
+    fprintf(fileToWrite, "\n-----------------------------------------------\n\n\n");
+
+    Sort(data.text, data.text + data.nLines - 1 , sizeof(char*), &StrCmpDef);
+
+    PutData(&data, fileToWrite);
+
+    FreeData(&data);
 
     return 0;
 }

@@ -3,18 +3,40 @@
 
 #include <stdio.h>
 
-struct Data {
-    char* buf;
-    size_t bufSize;
 
-    char** text;
-    size_t nLines;
+/// @brief struct that holds file contents
+struct Data {
+    char* buf;      ///< buffer that holds file string
+    size_t bufSize; ///< size of buffer in bytes
+
+    char** text;    ///< string array
+    size_t nLines;  ///< number of strings
 };
 
+
+/**
+ * @brief get data from file
+ *
+ * @param data Data struct
+ * @param file file to get data from
+*/
 void GetData(Data* data, FILE* file);
 
+
+/**
+ * @brief put data to file
+ *
+ * @param data Data struct
+ * @param file file to put data to
+*/
 void PutData(Data* data, FILE* file);
 
-void PutDataRv(Data* data, FILE* file);
+
+/**
+ * @brief free all data members
+ *
+ * @param data Data struct
+*/
+void FreeData(Data* data);
 
 #endif

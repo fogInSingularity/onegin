@@ -3,8 +3,18 @@
 
 #include <stddef.h>
 
+
+/// @brief alias for compare function
 typedef int Compare_t(void* a, void* b);
 
-void Sort(void* data, size_t size, size_t elSize, Compare_t* CompareFunc);
+/**
+ * @brief sorts array
+ *
+ * @param left left side off array
+ * @param right right size off array
+ * @param elSize size of element
+ * @param CompareFunc comparator function
+*/
+void Sort(void* left, void* right, size_t elSize, Compare_t* CompareFunc);
 
 #endif // SORT_H

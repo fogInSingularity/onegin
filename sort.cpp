@@ -7,26 +7,40 @@
 #include "sort.h"
 
 static void SwapBytes(void* a, void* b, size_t size);
+static void* Partition(void* left, void* right, size_t elSize,  Compare_t* CompareFunc);
 
-void Sort(void* data, size_t size, size_t elSize, Compare_t* CompareFunc) { //FIXME - переписать по qsort
-    assert(data        != nullptr);
-    assert(CompareFunc != nullptr);
+void Sort(void* left, void* right, size_t elSize, Compare_t* CompareFunc) {
+    if (left < right) {
+        void* mid = Partition(left, right, elSize, CompareFunc);
 
-    for (ssize_t sortedEl = (ssize_t)(size - 1); sortedEl >= 0; sortedEl--) {
-        for (size_t cur = 0; cur < (size_t)sortedEl; cur++) {
-            if (CompareFunc(*(void**)((size_t)data + elSize*cur), *(void**)((size_t)data + elSize*(cur + 1)))) {
-                // printf("# %s -> %s\n", *(void**)((size_t)data + elSize*cur), *(void**)((size_t)data + elSize*(cur + 1)));
-                SwapBytes((void*)((size_t)data + elSize*cur), (void*)((size_t)data + elSize*(cur + 1)), elSize);
-            }
-
-        }
+        Sort(left               , (char*)mid-elSize, elSize, CompareFunc);
+        Sort((char*)mid + elSize, right            , elSize, CompareFunc);
     }
 }
+
+static void* Partition(void* left, void* right, size_t elSize,  Compare_t* CompareFunc) {
+    void* pivot = right;
+    void* store = left;
+
+    while (left < right) {
+        if (!CompareFunc(left, pivot)) {
+            SwapBytes(store, left, elSize);
+            store = (char*)store + elSize;
+        }
+        left = (char*)left + elSize;
+    }
+
+    SwapBytes(right, store, elSize);
+
+    return store;
+}
+
+
 
 static void SwapBytes(void* a, void* b, size_t size) {
     assert(a != nullptr);
     assert(b != nullptr);
-    assert(a != b);
+    // assert(a != b);
 
     size_t nFullOps = size >> 3; // колво шагов по 8
     size_t trailer = size & 0b111; // оставшиеся 7 байт

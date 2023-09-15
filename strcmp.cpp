@@ -4,23 +4,22 @@
 #include <assert.h>
 #include <stdint.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "strcmp.h"
 
-static bool IsValid(char c);
-
-int StrCmp(void* a, void* b) {
+int StrCmp(void* a, void* b) { //NOTE - careful
     assert(a != nullptr);
     assert(b != nullptr);
 
-    char* strA = (char*)a;
-    char* strB = (char*)b;
+    char* strA = *(char**)a;
+    char* strB = *(char**)b;
 
     while (*strA != '\0' && *strB != '\0') {
-        while (!IsValid(*strA)) {
+        while (!isalpha(*strA)) {
             strA++;
         }
-        while (!IsValid(*strB)) {
+        while (!isalpha(*strB)) {
             strB++;
         }
 
@@ -36,28 +35,26 @@ int StrCmp(void* a, void* b) {
     return 0;
 }
 
-int StrCmpRv(void* a, void* b) { //FIXME - написать реверс
+int StrCmpRv(void* a, void* b) { //NOTE - careful
     assert(a != nullptr);
     assert(b != nullptr);
 
-    char* strA = (char*)a;
-    char* strB = (char*)b;
+    char* strA = *(char**)a;
+    char* strB = *(char**)b;
 
-    char* endA = strA + strlen(strA) - 1;
-    char* endB = strB + strlen(strB) - 1;
+    char* endA = strA + strlen(strA);
+    char* endB = strB + strlen(strB);
 
-    while (strA < endA && strB < endB) { //FIXME - not check when str == end
-        while (!IsValid(*endA) && strA < endA) { // был валид от strA и из-за этого сорт был карявый
+    while (strA < endA && strB < endB) {
+        while (!isalpha(*endA) && strA < endA) {
             endA--;
         }
 
-        while (!IsValid(*endB) && strB < endB) {
+        while (!isalpha(*endB) && strB < endB) {
             endB--;
         }
 
         if (*endA != *endB) {
-            // printf("# return %d\n", *endA - *endB);
-            // printf("# %c -> %c\n", *strA, *strB);
             return (*endA - *endB > 0) ? 1 : 0;
         }
 
@@ -73,16 +70,6 @@ int StrCmpRv(void* a, void* b) { //FIXME - написать реверс
     return 0;
 }
 
-static bool IsValid(char c) {
-    if (c >= '0' && c <= '9') {
-        return true;
-    } else if (c >= 'A' && c <= 'Z') {
-        return true;
-    } else if (c >= 'a' && c <= 'z') {
-        return true;
-    } else if (c == '\0') {
-        return true;
-    } else {
-        return false;
-    }
+int StrCmpDef(void* a, void* b) {
+    return (*(size_t*)a > *(size_t*)b) ? 1 : 0;
 }

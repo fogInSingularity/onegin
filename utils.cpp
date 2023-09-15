@@ -49,25 +49,12 @@ void PutData(Data* data, FILE* file) {
     }
 }
 
-void PutDataRv(Data* data, FILE* file) {
-    assert(data != nullptr);
-    assert(file != nullptr);
+void FreeData(Data* data) {
+    free(data->buf);
+    data->buf = nullptr;
 
-    char* start = nullptr;
-    char* end = nullptr;
-    for (size_t i = 0; i < data->nLines; i++) {
-        start = *(data->text + i);
-        end = start + strlen(start) - 1;
-
-        while (start <= end) {
-            fputc(*end, file);
-            end--;
-        }
-        fputc('\n', file);
-
-        start = nullptr;
-        end = nullptr;
-    }
+    free(data->text);
+    data->text = nullptr;
 }
 
 // -------------------------------------
