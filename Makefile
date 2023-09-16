@@ -41,7 +41,7 @@ doxygen:
 	@doxygen Doxyfile
 
 release:
-	g++ $(wildcard *.cpp) -o onegin -O3
-	
+	@g++ $(wildcard *.cpp) -o onegin -O3
+
 # -include $(DEPS)
 

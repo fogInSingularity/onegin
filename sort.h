@@ -3,9 +3,9 @@
 
 #include <stddef.h>
 
-
 /// @brief alias for compare function
-typedef int Compare_t(void* a, void* b);
+typedef int Compare_t(const void* a,const void* b);
+
 
 /**
  * @brief sorts array

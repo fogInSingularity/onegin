@@ -15,9 +15,9 @@ static void FileRead(char* buf, size_t fileSize, FILE* fileToRead);
 
 static size_t CountLines(const char* str, const size_t len);
 
-static void SwapN(char* str,const  size_t len);
+static void SwapChar(char* str,const size_t len, char start, char end);
 
-static void FillText(char** text, char* buf, const size_t fileSize);
+static void FillText(Str* text, char* buf, const size_t fileSize);
 
 // --------------------------------------
 
@@ -33,9 +33,9 @@ void GetData(Data* data, FILE* file) {
 
     data->nLines = CountLines(data->buf, data->bufSize);
 
-    SwapN(data->buf, data->bufSize);
+    SwapChar(data->buf, data->bufSize, '\n', '\0');
 
-    data->text = (char**)calloc(data->nLines+1, sizeof(char*));
+    data->text = (Str*)calloc(data->nLines+1, sizeof(Str));
 
     FillText(data->text, data->buf, data->bufSize);
 }
@@ -45,7 +45,22 @@ void PutData(Data* data, FILE* file) {
     assert(file != nullptr);
 
     for (size_t i = 0; i < data->nLines; i++) {
-        fprintf(file, "%s\n", *(data->text + i));
+        fprintf(file, "%s\n", (data->text + i)->str);
+    }
+}
+
+void PutBuf(Data* data, FILE* file) {
+    assert(data != nullptr);
+    assert(file != nullptr);
+
+    size_t iter = 0;
+    while (iter < data->bufSize) {
+        if (data->buf[iter] == '\0') {
+            fputc('\n', file);
+        } else {
+            fputc(data->buf[iter], file);
+        }
+        iter++;
     }
 }
 
@@ -95,35 +110,39 @@ static size_t CountLines(const char* str, const size_t len) { //
     return lines;
 }
 
-static void SwapN(char* str,const size_t len) { //
+static void SwapChar(char* str,const size_t len, char start, char end) { //
     assert(str != nullptr);
 
     char* iter = str;
 
     while (iter != str + len) {
-        if (*iter == '\n')
-            *iter = '\0';
+        if (*iter == start)
+            *iter = end;
         iter++;
     }
 }
 
-static void FillText(char** text, char* buf, const size_t fileSize) { //
+static void FillText(Str* text, char* buf, const size_t fileSize) {
     assert(text != nullptr);
     assert(buf  != nullptr);
 
-    char** fillText = text;
+    Str* fillText = text;
     bool nLinePrev = true;
 
-    char* iter = buf;
+    char* iter = buf + strlen(buf) - 1;
+    char* hold = buf;
 
     while (iter != buf + fileSize) {
         if (nLinePrev) {
-            *fillText = iter;
+            fillText->str = hold;
+            fillText->len = iter - hold - 2;
+            hold = iter;
             fillText++;
         }
 
         if (*iter == '\0') {
             nLinePrev = true;
+
         } else {
             nLinePrev = false;
         }

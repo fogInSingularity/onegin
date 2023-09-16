@@ -6,3 +6,4 @@ sorted
 build/
 perf.data
 perf.data.old
+.vscode/

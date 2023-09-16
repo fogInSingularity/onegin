@@ -6,14 +6,18 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "utils.h"
 #include "strcmp.h"
 
-int StrCmp(void* a, void* b) { //NOTE - careful
+int StrCmp(const void* a,const void* b) { //NOTE - careful
     assert(a != nullptr);
     assert(b != nullptr);
 
-    char* strA = *(char**)a;
-    char* strB = *(char**)b;
+    Str A = *(const Str*)a;
+    Str B = *(const Str*)b;
+
+    char* strA = A.str;
+    char* strB = B.str;
 
     while (*strA != '\0' && *strB != '\0') {
         while (!isalpha(*strA)) {
@@ -35,15 +39,18 @@ int StrCmp(void* a, void* b) { //NOTE - careful
     return 0;
 }
 
-int StrCmpRv(void* a, void* b) { //NOTE - careful
+int StrCmpRv(const void* a,const void* b) { //NOTE - careful
     assert(a != nullptr);
     assert(b != nullptr);
 
-    char* strA = *(char**)a;
-    char* strB = *(char**)b;
+    Str A = *(const Str*)a;
+    Str B = *(const Str*)b;
 
-    char* endA = strA + strlen(strA);
-    char* endB = strB + strlen(strB);
+    char* strA = A.str;
+    char* strB = B.str;
+
+    char* endA = strA + A.len;
+    char* endB = strB + B.len;
 
     while (strA < endA && strB < endB) {
         while (!isalpha(*endA) && strA < endA) {
@@ -68,8 +75,4 @@ int StrCmpRv(void* a, void* b) { //NOTE - careful
     }
 
     return 0;
-}
-
-int StrCmpDef(void* a, void* b) {
-    return (*(size_t*)a > *(size_t*)b) ? 1 : 0;
 }

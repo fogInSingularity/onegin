@@ -10,43 +10,45 @@
 #include "utils.h"
 
 int main() {
-    FILE* fileToRead  = fopen("poem", "r" );
-    // FILE* fileToRead  = fopen("input", "r");
+    const char* fileNameToRead = "poem";
+    FILE* fileToRead  = fopen(fileNameToRead, "r" );
     if (fileToRead == nullptr) {
-        printf("# error: cant open file to read\n");
+        printf("# error: cant open file to read: %s\n", fileNameToRead);
         return 0;
     }
 
-    FILE* fileToWrite = fopen("sorted", "w");
+    const char* fileNameToWrite = "sorted";
+    FILE* fileToWrite = fopen(fileNameToWrite, "w");
     if (fileToWrite == nullptr) {
-        printf("# error: cant open file to write\n");
+        printf("# error: cant open file to write: %s\n", fileNameToWrite);
         return 0;
     }
 
-    Data data = {
-        nullptr,
-        0,
-        nullptr,
-        0,
-    };
+    Data data = {}; // nullify data
 
     GetData(&data, fileToRead);
 
-    Sort(data.text, data.text + data.nLines - 1, sizeof(char*), &StrCmp);
+    //-------------------------------------------------------------------
+
+    Sort(data.text, data.text + data.nLines - 1, sizeof(Str), &StrCmp);
 
     PutData(&data, fileToWrite);
 
-    fprintf(fileToWrite, "\n-----------------------------------------------\n\n\n");
 
-    Sort(data.text, data.text + data.nLines - 1 , sizeof(char*), &StrCmpRv);
-
-    PutData(&data, fileToWrite);
-
-    fprintf(fileToWrite, "\n-----------------------------------------------\n\n\n");
-
-    Sort(data.text, data.text + data.nLines - 1 , sizeof(char*), &StrCmpDef);
+    qsort(data.text, data.nLines, sizeof(Str), &StrCmpRv);
 
     PutData(&data, fileToWrite);
+
+
+    PutBuf(&data, fileToWrite);
+
+    //-------------------------------------------------------------------
+
+    fclose(fileToRead);
+    fileToRead = nullptr;
+
+    fclose(fileToWrite);
+    fileToWrite = nullptr;
 
     FreeData(&data);
 

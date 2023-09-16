@@ -9,6 +9,8 @@
 static void SwapBytes(void* a, void* b, size_t size);
 static void* Partition(void* left, void* right, size_t elSize,  Compare_t* CompareFunc);
 
+//-----------------------------------------------------------------------------------
+
 void Sort(void* left, void* right, size_t elSize, Compare_t* CompareFunc) {
     if (left < right) {
         void* mid = Partition(left, right, elSize, CompareFunc);
@@ -17,6 +19,8 @@ void Sort(void* left, void* right, size_t elSize, Compare_t* CompareFunc) {
         Sort((char*)mid + elSize, right            , elSize, CompareFunc);
     }
 }
+
+//------------------------------------------------------------------------------------
 
 static void* Partition(void* left, void* right, size_t elSize,  Compare_t* CompareFunc) {
     void* pivot = right;
