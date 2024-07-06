@@ -11,7 +11,7 @@
 
 int main() {
     const char* fileNameToRead = "poem";
-    FILE* fileToRead  = fopen(fileNameToRead, "r" );
+    FILE* fileToRead  = fopen(fileNameToRead, "r");
     if (fileToRead == nullptr) {
         printf("# error: cant open file to read: %s\n", fileNameToRead);
         return 0;

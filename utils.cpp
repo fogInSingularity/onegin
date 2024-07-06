@@ -15,7 +15,7 @@ static void FileRead(char* buf, size_t fileSize, FILE* fileToRead);
 
 static size_t CountLines(const char* str, const size_t len);
 
-static void SwapChar(char* str,const size_t len, char start, char end);
+static void ReplaceChar(char* str,const size_t len, char start, char end);
 
 static void FillText(Str* text, char* buf, const size_t fileSize);
 
@@ -33,7 +33,7 @@ void GetData(Data* data, FILE* file) {
 
     data->nLines = CountLines(data->buf, data->bufSize);
 
-    SwapChar(data->buf, data->bufSize, '\n', '\0');
+    ReplaceChar(data->buf, data->bufSize, '\n', '\0');
 
     data->text = (Str*)calloc(data->nLines+1, sizeof(Str));
 
@@ -65,6 +65,8 @@ void PutBuf(Data* data, FILE* file) {
 }
 
 void FreeData(Data* data) {
+    assert(data != nullptr);
+
     free(data->buf);
     data->buf = nullptr;
 
@@ -74,7 +76,7 @@ void FreeData(Data* data) {
 
 // -------------------------------------
 
-static ssize_t FileSize(FILE* file) { //
+static ssize_t FileSize(FILE* file) {
     assert(file != nullptr);
 
     fseek(file, 0, SEEK_END);
@@ -86,16 +88,16 @@ static ssize_t FileSize(FILE* file) { //
     return size;
 }
 
-static void FileRead(char* buf, size_t fileSize, FILE* fileToRead) { //
+static void FileRead(char* buf, size_t fileSize, FILE* fileToRead) {
     assert(buf        != nullptr);
     assert(fileToRead != nullptr);
 
     fread(buf, sizeof(char), fileSize, fileToRead);
     *(buf + fileSize - 2) = '\n';
-    *(buf + fileSize - 1)     = '\0';
+    *(buf + fileSize - 1) = '\0';
 }
 
-static size_t CountLines(const char* str, const size_t len) { //
+static size_t CountLines(const char* str, const size_t len) {
     assert(str != nullptr);
 
     const char* iter = str;
@@ -110,7 +112,7 @@ static size_t CountLines(const char* str, const size_t len) { //
     return lines;
 }
 
-static void SwapChar(char* str,const size_t len, char start, char end) { //
+static void ReplaceChar(char* str, const size_t len, char start, char end) {
     assert(str != nullptr);
 
     char* iter = str;

@@ -28,7 +28,7 @@ int StrCmp(const void* a,const void* b) { //NOTE - careful
         }
 
         if (*strA != *strB)
-            return (*strA - *strB > 0) ? 1 : 0;
+            return (*strA - *strB > 0);
 
         if (*strA != '\0')
             strA++;
@@ -53,25 +53,15 @@ int StrCmpRv(const void* a,const void* b) { //NOTE - careful
     char* endB = strB + B.len;
 
     while (strA < endA && strB < endB) {
-        while (!isalpha(*endA) && strA < endA) {
-            endA--;
-        }
-
-        while (!isalpha(*endB) && strB < endB) {
-            endB--;
-        }
+        while (!isalpha(*endA) && strA < endA) { endA--; }
+        while (!isalpha(*endB) && strB < endB) { endB--; }
 
         if (*endA != *endB) {
-            return (*endA - *endB > 0) ? 1 : 0;
+            return (*endA - *endB > 0);
         }
 
-        if (strA < endA) {
-            endA--;
-        }
-
-        if (strB < endB) {
-            endB--;
-        }
+        if (strA < endA) { endA--; }
+        if (strB < endB) { endB--; }
     }
 
     return 0;

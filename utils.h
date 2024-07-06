@@ -15,7 +15,7 @@ struct Data {
     char* buf;      ///< buffer that holds file string
     size_t bufSize; ///< size of buffer in bytes
 
-    Str* text;       ///< string array
+    Str* text;      ///< string array
     size_t nLines;  ///< number of strings
 };
 

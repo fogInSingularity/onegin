@@ -12,6 +12,10 @@ static void* Partition(void* left, void* right, size_t elSize,  Compare_t* Compa
 //-----------------------------------------------------------------------------------
 
 void Sort(void* left, void* right, size_t elSize, Compare_t* CompareFunc) {
+    assert(left        != nullptr);
+    assert(right       != nullptr);
+    assert(CompareFunc != nullptr);
+
     if (left < right) {
         void* mid = Partition(left, right, elSize, CompareFunc);
 
@@ -23,6 +27,10 @@ void Sort(void* left, void* right, size_t elSize, Compare_t* CompareFunc) {
 //------------------------------------------------------------------------------------
 
 static void* Partition(void* left, void* right, size_t elSize,  Compare_t* CompareFunc) {
+    assert(left        != nullptr);
+    assert(right       != nullptr);
+    assert(CompareFunc != nullptr);
+
     void* pivot = right;
     void* store = left;
 
